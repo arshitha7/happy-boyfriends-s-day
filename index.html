@@ -12,6 +12,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Sacramento&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css">
+  
+  <!-- YouTube IFrame API for background music -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
 
@@ -91,21 +94,31 @@
         <div class="glow-heart">❤️</div>
       </div>
 
-      <!-- Dialogue Bubble Container (Anchored over character) -->
+      <!-- Cartoon Dialogue Bubble Container -->
       <div id="dialogue-container" class="dialogue-container hidden">
-        <div class="dialogue-bubble">
-          <div class="bubble-header">
-            <span class="speaker-tag">Me ♡</span>
-            <span id="dialogue-counter" class="dialogue-counter">♡ 01 / 08</span>
+        <div class="cartoon-bubble-wrapper">
+          <div class="cartoon-tail">
+            <svg viewBox="0 0 38 28" width="34" height="24">
+              <path d="M 6 28 C 14 26, 26 18, 30 2 C 22 14, 12 22, 6 28 Z" fill="#fffcf7" stroke="#ffba88" stroke-width="2.5" stroke-linejoin="round"/>
+            </svg>
           </div>
-          <p id="dialogue-text" class="dialogue-text">"You know what..."</p>
-          <div class="dialogue-footer">
-            <button id="btn-continue-dialogue" class="btn-continue">
-              <span>Tap to continue</span>
-              <span class="continue-arrow">▸</span>
-            </button>
+          <div class="dialogue-bubble">
+            <div class="bubble-header">
+              <div class="speaker-badge">
+                <span class="speaker-icon">🌸</span>
+                <span class="speaker-tag">Her ♡</span>
+              </div>
+              <span id="dialogue-counter" class="dialogue-counter">♡ 01 / 08</span>
+            </div>
+            <p id="dialogue-text" class="dialogue-text">"You know what…"</p>
+            <div class="dialogue-footer">
+              <button id="btn-continue-dialogue" class="btn-continue">
+                <span class="continue-pulse-heart">💗</span>
+                <span>Tap to continue</span>
+                <span class="continue-arrow">▸</span>
+              </button>
+            </div>
           </div>
-          <div class="bubble-tail"></div>
         </div>
       </div>
 
@@ -164,12 +177,25 @@
 
     </div>
 
-    <!-- Audio & Ambient Control Widget -->
-    <div class="audio-controls">
-      <button id="btn-music" class="btn-icon" aria-label="Toggle Romantic Music" title="Toggle romantic melody">
+    <!-- Hidden YouTube Audio Player -->
+    <div id="yt-player-wrap" style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;">
+      <div id="youtube-player"></div>
+    </div>
+
+    <!-- Audio & Song Widget: Just the Way You Are -->
+    <div id="btn-music" class="audio-controls" title="Toggle song: Just the Way You Are - Bruno Mars">
+      <div class="audio-waves" id="audio-waves">
+        <span class="wave-bar bar-1"></span>
+        <span class="wave-bar bar-2"></span>
+        <span class="wave-bar bar-3"></span>
+      </div>
+      <button class="btn-icon" aria-label="Toggle Music">
         <span id="music-icon" class="music-icon">🎵</span>
       </button>
-      <span class="music-label">Romantic Melody</span>
+      <div class="music-info">
+        <span class="music-title">Just the Way You Are</span>
+        <span class="music-artist">Bruno Mars ♡</span>
+      </div>
     </div>
 
   </div>

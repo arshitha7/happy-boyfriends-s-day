@@ -10,15 +10,15 @@
      STORY CONFIGURATION & DIALOGUE
      ========================================================================== */
 
-  // Exact dialogue specified by the user
+  // Exact dialogue specified by the user (no hyphens, only commas)
   const dialogueList = [
     "You know what…",
     "You’re the most wonderful and lovely person I’ve ever known.",
-    "You always give me the best of everything — your love, your care, and your time.",
+    "You always give me the best of everything, your love, your care, and your time.",
     "All I want is to keep smiling with you… and I want to be the reason behind your smile too.",
     "I’d be the happiest if I could spend my life beside you, holding your hand through everything.",
     "I want to show you every single day what it truly feels like to be loved.",
-    "I want to build a little world with you ,one filled with nothing but love, happiness, and all the best things you deserve.",
+    "I want to build a little world with you, one filled with nothing but love, happiness, and all the best things you deserve.",
     "So…"
   ];
 
@@ -203,6 +203,93 @@
   const audioEngine = new RomanticSoundtrack();
 
   /* ==========================================================================
+     YOUTUBE BACKGROUND MUSIC: "Just the Way You Are" (Bruno Mars)
+     https://youtu.be/LjhCEhWiKXk with offline procedural fallback
+     ========================================================================== */
+
+  let ytPlayer = null;
+  let ytReady = false;
+  let isSongActive = false;
+
+  window.onYouTubeIframeAPIReady = function () {
+    try {
+      ytPlayer = new YT.Player('youtube-player', {
+        height: '200',
+        width: '200',
+        videoId: 'LjhCEhWiKXk',
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          loop: 1,
+          playlist: 'LjhCEhWiKXk',
+          enablejsapi: 1,
+          playsinline: 1
+        },
+        events: {
+          onReady: function () {
+            ytReady = true;
+          },
+          onStateChange: function (event) {
+            if (window.YT && event.data === YT.PlayerState.PLAYING) {
+              updateMusicUI(true);
+            } else if (window.YT && (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED)) {
+              updateMusicUI(false);
+            }
+          }
+        }
+      });
+    } catch (e) {
+      console.warn("YouTube Player initialization:", e);
+    }
+  };
+
+  function playRomanticSong() {
+    isSongActive = true;
+    if (ytReady && ytPlayer && typeof ytPlayer.playVideo === 'function') {
+      try {
+        ytPlayer.playVideo();
+        updateMusicUI(true);
+        return;
+      } catch (err) {
+        console.warn("YouTube play attempt, using procedural fallback:", err);
+      }
+    }
+    // Fallback to soothing procedural Web Audio soundtrack
+    audioEngine.start();
+    updateMusicUI(true);
+  }
+
+  function pauseRomanticSong() {
+    isSongActive = false;
+    if (ytReady && ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
+      try {
+        ytPlayer.pauseVideo();
+      } catch (err) {}
+    }
+    audioEngine.stop();
+    updateMusicUI(false);
+  }
+
+  function toggleRomanticSong() {
+    if (isSongActive) {
+      pauseRomanticSong();
+    } else {
+      playRomanticSong();
+    }
+  }
+
+  function updateMusicUI(isPlaying) {
+    isSongActive = isPlaying;
+    const audioControls = document.getElementById('btn-music');
+    const musicIcon = document.getElementById('music-icon');
+    if (isPlaying) {
+      if (audioControls) audioControls.classList.add('playing');
+      if (musicIcon) musicIcon.textContent = '🔊';
+    } else {
+      if (audioControls) audioControls.classList.remove('playing');
+      if (musicIcon) musicIcon.textContent = '🔈';
+    }
+  }
      PARTICLE & PETAL CANVAS SYSTEM
      ========================================================================== */
 
@@ -380,12 +467,8 @@
     isStoryRunning = true;
     titleCard.classList.add('hidden');
 
-    // Start soothing procedural soundtrack
-    if (!musicPlaying) {
-      audioEngine.start();
-      musicPlaying = true;
-      musicIcon.textContent = '🔊';
-    }
+    // Start Bruno Mars - Just the Way You Are (or procedural fallback)
+    playRomanticSong();
 
     // SCENE 1: Peaceful park wide shot at golden hour (already active)
     showScene(0);
@@ -666,12 +749,31 @@
   // Replay
   btnReplay.addEventListener('click', replayStory);
 
-  // Sound Toggle
+  // Sound Toggle: Play/Pause Bruno Mars song
   btnMusic.addEventListener('click', (e) => {
     e.stopPropagation();
-    const isNowPlaying = audioEngine.toggle();
-    musicPlaying = isNowPlaying;
-    musicIcon.textContent = isNowPlaying ? '🔊' : '🔇';
+    toggleRomanticSong();
   });
+
+  // Interactive romantic sparkle burst on click/tap
+  document.addEventListener('pointerdown', (e) => {
+    // Avoid double triggering if clicking buttons directly
+    if (!e.target.closest('#btn-start-film') && !e.target.closest('#btn-yes') && !e.target.closest('#btn-no')) {
+      createSparkle(e.clientX, e.clientY);
+    }
+  });
+
+  const sparkleEmojis = ['💖', '💕', '✨', '🌸', '🌹', '♡', '💗'];
+  function createSparkle(x, y) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'click-heart-sparkle';
+    sparkle.textContent = sparkleEmojis[Math.floor(Math.random() * sparkleEmojis.length)];
+    sparkle.style.left = `${x}px`;
+    sparkle.style.top = `${y}px`;
+    document.body.appendChild(sparkle);
+    setTimeout(() => {
+      sparkle.remove();
+    }, 1200);
+  }
 
 })();
