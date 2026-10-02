@@ -60,14 +60,14 @@
   const btnStartFilm = document.getElementById('btn-start-film');
   const scenePill = document.getElementById('scene-pill');
   const scenePillText = document.getElementById('scene-pill-text');
-  
+
   const dialogueContainer = document.getElementById('dialogue-container');
   const dialogueText = document.getElementById('dialogue-text');
   const dialogueCounter = document.getElementById('dialogue-counter');
   const btnContinueDialogue = document.getElementById('btn-continue-dialogue');
-  
+
   const handGlow = document.getElementById('hand-glow');
-  
+
   const questionModal = document.getElementById('question-modal');
   const btnYes = document.getElementById('btn-yes');
   const btnNo = document.getElementById('btn-no');
@@ -101,7 +101,7 @@
       this.gainNode = null;
       this.isPlaying = false;
       this.timer = null;
-      
+
       // Ethereal Pentatonic / Warm Romantic Chords (Frequencies in Hz)
       this.notes = [
         261.63, // C4
@@ -131,26 +131,26 @@
     playPluck(freq, delay = 0, duration = 2.4) {
       if (!this.ctx || !this.isPlaying) return;
       const startTime = this.ctx.currentTime + delay;
-      
+
       const osc = this.ctx.createOscillator();
       const oscSub = this.ctx.createOscillator();
       const noteGain = this.ctx.createGain();
-      
+
       osc.type = 'sine';
       oscSub.type = 'triangle';
-      
+
       osc.frequency.setValueAtTime(freq, startTime);
       oscSub.frequency.setValueAtTime(freq / 2, startTime);
-      
+
       // Soft gentle envelope
       noteGain.gain.setValueAtTime(0.001, startTime);
       noteGain.gain.linearRampToValueAtTime(0.25, startTime + 0.08);
       noteGain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-      
+
       osc.connect(noteGain);
       oscSub.connect(noteGain);
       noteGain.connect(this.gainNode);
-      
+
       osc.start(startTime);
       oscSub.start(startTime);
       osc.stop(startTime + duration);
@@ -165,7 +165,7 @@
 
     scheduleLoop() {
       if (!this.isPlaying) return;
-      
+
       // Romantic arpeggio sequence
       const chordPatterns = [
         [0, 2, 4, 5], // C - E - G - C
@@ -173,7 +173,7 @@
         [1, 3, 4, 6], // D - G - A - D
         [0, 2, 3, 7]  // C - E - G - E5
       ];
-      
+
       const pattern = chordPatterns[Math.floor(Math.random() * chordPatterns.length)];
       pattern.forEach((noteIdx, i) => {
         this.playPluck(this.notes[noteIdx], i * 0.45, 2.6);
@@ -264,7 +264,7 @@
     if (ytReady && ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
       try {
         ytPlayer.pauseVideo();
-      } catch (err) {}
+      } catch (err) { }
     }
     audioEngine.stop();
     updateMusicUI(false);
@@ -290,8 +290,7 @@
       if (musicIcon) musicIcon.textContent = '🔈';
     }
   }
-     PARTICLE & PETAL CANVAS SYSTEM
-     ========================================================================== */
+
 
   class AmbientParticleCanvas {
     constructor(canvasId) {
@@ -476,7 +475,7 @@
     // After 3.5s -> Transition to SCENE 2: Boyfriend waiting on bench
     storyTimeout = setTimeout(() => {
       showScene(1); // scene_2_waiting.jpg
-      
+
       // Let him wait quietly, looking around
       setTimeout(() => {
         showNotificationPill("Someone is coming...", 3500);
@@ -566,7 +565,7 @@
   function holdHands() {
     // Switch to intimate hand-holding keyframe
     showScene(4); // scene_5_hands.jpg
-    
+
     // Activate glowing heart over their hands
     handGlow.classList.remove('hidden');
 
@@ -651,7 +650,7 @@
    */
   function handleYes() {
     questionModal.classList.add('hidden');
-    
+
     // Trigger soft romantic celebration on canvas
     particleCanvas.triggerCelebration();
 
