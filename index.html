@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Happy Boyfriend's Day, My Love ♡ | October 3, 2026</title>
+  <meta name="description" content="A romantic interactive animated short film for Boyfriend's Day on October 3, 2026.">
+  
+  <!-- Google Fonts: Editorial serif, warm sans-serif, and intimate handwritten style -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Sacramento&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Fullscreen Cinema Experience -->
+  <div id="cinema-stage" class="cinema-stage">
+    
+    <!-- Cinematic Aspect & Letterbox -->
+    <div class="letterbox top-bar"></div>
+    <div class="letterbox bottom-bar"></div>
+
+    <!-- Atmospheric Particle Canvas (Golden dust, floating rose petals, sun sparkles) -->
+    <canvas id="fx-canvas" class="fx-canvas"></canvas>
+
+    <!-- Sun flare & Golden Hour Lighting Filter -->
+    <div class="sun-flare-overlay"></div>
+    <div class="vignette-overlay"></div>
+
+    <!-- Visual Scenes Stack -->
+    <div id="scene-viewport" class="scene-viewport">
+      
+      <!-- Scene 1: Peaceful park wide shot at golden hour -->
+      <div id="scene-1" class="scene-layer active">
+        <img src="assets/scene_1_park.jpg" alt="Peaceful park at golden hour" class="scene-bg zoom-pan-1">
+      </div>
+
+      <!-- Scene 2: Boyfriend waiting on wooden bench -->
+      <div id="scene-2" class="scene-layer">
+        <img src="assets/scene_2_waiting.jpg" alt="Boyfriend sitting alone on wooden bench" class="scene-bg zoom-pan-2">
+      </div>
+
+      <!-- Scene 3: Girlfriend walking on path with roses hidden behind back -->
+      <div id="scene-3" class="scene-layer">
+        <img src="assets/scene_3_walking.jpg" alt="Girlfriend walking with roses hidden behind back" class="scene-bg zoom-pan-3">
+      </div>
+
+      <!-- Scene 4 & 5: She sits beside him and surprises him with roses -->
+      <div id="scene-4" class="scene-layer">
+        <img src="assets/scene_4_roses.jpg" alt="Surprising him with roses on the bench" class="scene-bg zoom-pan-4">
+      </div>
+
+      <!-- Scene 6: Intimate hand-holding and conversation on bench -->
+      <div id="scene-5" class="scene-layer">
+        <img src="assets/scene_5_hands.jpg" alt="Sitting together holding hands tenderly" class="scene-bg zoom-pan-5">
+      </div>
+
+      <!-- Scene 7 & 8: Wide sunset pull-back under the great tree -->
+      <div id="scene-6" class="scene-layer">
+        <img src="assets/scene_6_ending.jpg" alt="Couple holding hands at golden sunset under the tree" class="scene-bg zoom-pan-6">
+      </div>
+
+    </div>
+
+    <!-- Overlaid Interactive Story Elements -->
+    <div id="story-ui" class="story-ui">
+
+      <!-- Scene 1 Title Card -->
+      <div id="title-card" class="overlay-card title-card">
+        <div class="title-date">October 3, 2026</div>
+        <h1 class="title-text">Just a little something for you... ♡</h1>
+        <p class="title-subtitle">A little romantic short film of us</p>
+        <button id="btn-start-film" class="btn-primary-film">
+          <span>Begin Our Story</span>
+          <svg class="heart-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Scene Notification Pill -->
+      <div id="scene-pill" class="scene-pill hidden">
+        <span id="scene-pill-text">Someone is coming...</span>
+      </div>
+
+      <!-- Glowing Heart on Hands SVG (Scene 5 Hand holding moment) -->
+      <div id="hand-glow" class="hand-glow hidden">
+        <div class="glow-ring"></div>
+        <div class="glow-heart">❤️</div>
+      </div>
+
+      <!-- Dialogue Bubble Container (Anchored over character) -->
+      <div id="dialogue-container" class="dialogue-container hidden">
+        <div class="dialogue-bubble">
+          <div class="bubble-header">
+            <span class="speaker-tag">Me ♡</span>
+            <span id="dialogue-counter" class="dialogue-counter">♡ 01 / 08</span>
+          </div>
+          <p id="dialogue-text" class="dialogue-text">"You know what..."</p>
+          <div class="dialogue-footer">
+            <button id="btn-continue-dialogue" class="btn-continue">
+              <span>Tap to continue</span>
+              <span class="continue-arrow">▸</span>
+            </button>
+          </div>
+          <div class="bubble-tail"></div>
+        </div>
+      </div>
+
+      <!-- Final Question Modal Card -->
+      <div id="question-modal" class="question-modal hidden">
+        <div class="question-card">
+          <div class="question-decoration">✨ 🌹 ✨</div>
+          <h2 id="question-heading" class="question-heading">
+            Shall we spend every Boyfriend’s Day that comes after this one together? ♡
+          </h2>
+          <p class="question-sub">Choose carefully, my love...</p>
+
+          <div id="button-playground" class="button-playground">
+            <button id="btn-yes" class="btn-choice btn-yes">
+              <span class="yes-heart">❤️</span> YES
+            </button>
+            <button id="btn-no" class="btn-choice btn-no">
+              NO
+            </button>
+          </div>
+
+          <div id="playful-message" class="playful-message"></div>
+        </div>
+      </div>
+
+      <!-- Celebration & Ending Vows Container -->
+      <div id="vows-container" class="vows-container hidden">
+        <div class="vows-card">
+          <p id="vow-line-1" class="vow-line">Then it's a promise. ♡</p>
+          <p id="vow-line-2" class="vow-line">Here's to every Boyfriend's Day that comes after this one.</p>
+          <p id="vow-line-3" class="vow-line">Here's to every little day we get to spend together.</p>
+          <p id="vow-line-4" class="vow-line highlight">Happy Boyfriend's Day, my love.</p>
+          <p id="vow-line-5" class="vow-line cursive">"I'd choose you. Every time. ♡"</p>
+          
+          <div class="vow-meta">
+            <span class="vow-date">October 3, 2026</span>
+            <span class="vow-author">made with all my love, just for you ♡</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fade to Warm Cream / Final "The End" Screen -->
+      <div id="end-screen" class="end-screen hidden">
+        <div class="end-content">
+          <div class="end-rose">🌹</div>
+          <h2 class="end-title">THE END ♡</h2>
+          <p class="end-subtitle">or maybe just another beginning...</p>
+          <div class="end-names">
+            <span>Always & Forever</span>
+          </div>
+          <button id="btn-replay" class="btn-replay">
+            <span>Watch Again ♡</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Audio & Ambient Control Widget -->
+    <div class="audio-controls">
+      <button id="btn-music" class="btn-icon" aria-label="Toggle Romantic Music" title="Toggle romantic melody">
+        <span id="music-icon" class="music-icon">🎵</span>
+      </button>
+      <span class="music-label">Romantic Melody</span>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
