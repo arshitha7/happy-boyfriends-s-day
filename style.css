@@ -35,6 +35,7 @@
 html, body {
   width: 100%;
   height: 100%;
+  height: 100dvh;
   overflow: hidden;
   background-color: #0d0807;
   font-family: var(--font-sans);
@@ -49,6 +50,7 @@ html, body {
   position: relative;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -132,6 +134,13 @@ html, body {
   z-index: 5;
 }
 
+#scene-1 { --scene-img: url('assets/scene_1_park.jpg'); }
+#scene-2 { --scene-img: url('assets/scene_2_waiting.jpg'); }
+#scene-3 { --scene-img: url('assets/scene_3_walking.jpg'); }
+#scene-4 { --scene-img: url('assets/scene_4_roses.jpg'); }
+#scene-5 { --scene-img: url('assets/scene_5_hands.jpg'); }
+#scene-6 { --scene-img: url('assets/scene_6_ending.jpg'); }
+
 .scene-layer {
   position: absolute;
   top: 0;
@@ -149,7 +158,29 @@ html, body {
   visibility: visible;
 }
 
+/* Ambient Dreamy Background Glow (fills mobile letterbox / viewport seamlessly) */
+.scene-layer::before {
+  content: '';
+  position: absolute;
+  inset: -30px;
+  background-image: var(--scene-img);
+  background-size: cover;
+  background-position: center center;
+  filter: blur(36px) brightness(0.42);
+  transform: scale(1.15);
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scene-layer.active::before {
+  opacity: 1;
+}
+
 .scene-bg {
+  position: relative;
+  z-index: 2;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -984,45 +1015,130 @@ html, body {
 
 @media (max-width: 768px) {
   :root {
-    --letterbox-height: 18px;
+    --letterbox-height: 0px;
   }
 
-  /* Optimized character framing on mobile portrait screens */
+  /* Safe Dynamic Viewport Height for mobile browsers (Chrome / Safari) */
+  html, body, .cinema-stage {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .letterbox {
+    display: none;
+  }
+
+  .scene-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .scene-layer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  /* Upper Cinema Screen Window on Mobile Portrait */
   .scene-bg {
-    object-position: center 36%;
+    position: relative;
+    z-index: 2;
+    width: 100vw;
+    height: 52dvh;
+    min-height: 270px;
+    max-height: 420px;
+    object-fit: cover;
+    margin-top: calc(env(safe-area-inset-top, 0px) + 6px);
+    border-radius: 0 0 24px 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(255, 170, 80, 0.15);
+    /* Soft vertical blend so the cinema frame meets the ambient backdrop seamlessly */
+    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+  }
+
+  /* Precise Character Framing — Ensuring BOTH characters are visible and centered! */
+  #scene-1 .scene-bg {
+    object-position: center 40%;
   }
 
   #scene-2 .scene-bg {
-    object-position: 70% 38%;
+    /* Boyfriend sitting alone on wooden bench in golden sunlight */
+    object-position: 32% 40%;
   }
 
   #scene-3 .scene-bg {
-    object-position: 28% 36%;
+    /* Girlfriend with roses hidden behind back + Boyfriend on bench waiting */
+    object-position: 45% 36%;
   }
 
-  #scene-4 .scene-bg,
+  #scene-4 .scene-bg {
+    /* Girlfriend handing bouquet + Boyfriend blushing & smiling with joy */
+    object-position: 52% 38%;
+  }
+
   #scene-5 .scene-bg {
-    object-position: 50% 34%;
+    /* Intimate hand-holding and conversation on the bench */
+    object-position: 50% 36%;
   }
 
   #scene-6 .scene-bg {
-    object-position: 50% 45%;
+    /* Pull-back sunset ending under the great tree */
+    object-position: 50% 48%;
   }
 
+  /* Gentle Ken Burns animations calibrated for mobile portrait */
+  @keyframes kenBurns1 {
+    0% { transform: scale(1.0) translate(0, 0); }
+    100% { transform: scale(1.03) translate(-1%, -0.5%); }
+  }
+  @keyframes kenBurns2 {
+    0% { transform: scale(1.0) translate(0, 0); }
+    100% { transform: scale(1.03) translate(1%, -0.5%); }
+  }
+  @keyframes kenBurns3 {
+    0% { transform: scale(1.0) translate(-0.5%, 0); }
+    100% { transform: scale(1.03) translate(0.5%, -0.5%); }
+  }
+  @keyframes kenBurns4 {
+    0% { transform: scale(1.0) translate(0, 0); }
+    100% { transform: scale(1.03) translate(-0.5%, 0.5%); }
+  }
+  @keyframes kenBurns5 {
+    0% { transform: scale(1.0) translate(0, 0); }
+    100% { transform: scale(1.02) translate(0.5%, -0.3%); }
+  }
+  @keyframes kenBurns6 {
+    0% { transform: scale(1.0) translate(0, 0); }
+    100% { transform: scale(1.03) translate(0, -1%); }
+  }
+
+  /* Title Card / Start Screen */
   .title-card {
-    padding: 28px 20px;
-    width: 92vw;
+    padding: 32px 22px;
+    width: calc(100% - 32px);
+    max-width: 390px;
     border-radius: 24px;
+    background: rgba(20, 10, 8, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 215, 175, 0.35);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+    z-index: 50;
   }
 
   .title-date {
-    font-size: 0.76rem;
+    font-size: 0.78rem;
     letter-spacing: 3px;
     margin-bottom: 10px;
   }
 
   .title-text {
-    font-size: 1.65rem;
+    font-size: 1.7rem;
     margin-bottom: 10px;
   }
 
@@ -1032,31 +1148,60 @@ html, body {
   }
 
   .btn-primary-film {
-    padding: 12px 28px;
-    font-size: 0.95rem;
+    padding: 13px 30px;
+    font-size: 0.98rem;
   }
 
+  /* Scene Notification Pill (Left top corner, never colliding with audio widget) */
   .scene-pill {
-    top: calc(var(--letterbox-height) + 10px);
-    padding: 7px 18px;
-    font-size: 0.84rem;
-    max-width: 86vw;
-    text-align: center;
+    top: calc(env(safe-area-inset-top, 0px) + 12px);
+    left: 14px;
+    transform: none;
+    max-width: calc(100vw - 95px);
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    z-index: 45;
   }
 
+  /* Audio Controls (Top right corner within safe margin) */
+  .audio-controls {
+    top: calc(env(safe-area-inset-top, 0px) + 10px);
+    right: 12px;
+    padding: 5px 10px;
+    gap: 6px;
+    z-index: 60;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 0.88rem;
+  }
+
+  .audio-controls .music-info {
+    display: none; /* Keep compact on mobile */
+  }
+
+  /* Cartoon Dialogue Bubble on Mobile (Anchored in lower half, NEVER cut off by bottom nav) */
   .dialogue-container {
-    bottom: calc(var(--letterbox-height) + 12px);
+    position: absolute;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
     left: 50%;
     transform: translateX(-50%);
-    width: 95vw;
-    max-width: 95vw;
+    width: calc(100% - 24px);
+    max-width: 440px;
+    z-index: 35;
+    pointer-events: auto;
   }
 
   .dialogue-bubble {
-    padding: 16px 18px;
+    padding: 16px 20px;
     border-radius: 22px;
     border-width: 2.5px;
-    box-shadow: 0 12px 28px rgba(45, 15, 10, 0.35);
+    box-shadow: 0 14px 34px rgba(45, 15, 10, 0.4), 0 0 20px rgba(255, 160, 90, 0.25);
   }
 
   .cartoon-tail {
@@ -1065,39 +1210,56 @@ html, body {
     transform: scale(0.85);
   }
 
+  .bubble-header {
+    margin-bottom: 10px;
+  }
+
   .speaker-badge {
-    padding: 3px 10px;
+    padding: 3px 12px;
   }
 
   .speaker-tag {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
   }
 
   .dialogue-counter {
-    font-size: 0.8rem;
+    font-size: 0.82rem;
     padding: 3px 10px;
   }
 
   .dialogue-text {
     font-size: 1.15rem;
-    line-height: 1.45;
-    min-height: 44px;
+    line-height: 1.44;
+    min-height: 48px;
+  }
+
+  .dialogue-footer {
+    margin-top: 12px;
   }
 
   .btn-continue {
-    padding: 7px 16px;
-    font-size: 0.84rem;
+    padding: 9px 20px;
+    font-size: 0.88rem;
+    box-shadow: 0 6px 18px rgba(255, 107, 139, 0.5);
   }
 
+  /* Hand-holding glowing heart in Scene 5 */
   .hand-glow {
-    top: 64%;
+    top: calc(env(safe-area-inset-top, 0px) + 38dvh);
+    left: 50%;
+  }
+
+  /* Final Question Modal Card */
+  .question-modal {
+    padding: 16px;
   }
 
   .question-card {
-    padding: 26px 18px;
+    padding: 26px 20px;
     border-radius: 24px;
-    width: 92vw;
-    max-width: 92vw;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 35px rgba(255, 180, 100, 0.25);
   }
 
   .question-heading {
@@ -1107,17 +1269,17 @@ html, body {
 
   .question-sub {
     font-size: 0.88rem;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
   }
 
   .button-playground {
-    min-height: 55px;
+    min-height: 56px;
     gap: 16px;
   }
 
   .btn-choice {
-    padding: 12px 24px;
-    font-size: 1rem;
+    padding: 12px 28px;
+    font-size: 1.05rem;
   }
 
   .btn-no.escaped {
@@ -1125,10 +1287,17 @@ html, body {
     font-size: 0.92rem !important;
   }
 
+  /* Vows Card */
+  .vows-container {
+    width: calc(100% - 28px);
+    max-width: 440px;
+    max-height: 85dvh;
+    overflow-y: auto;
+  }
+
   .vows-card {
-    padding: 28px 18px;
+    padding: 28px 20px;
     border-radius: 24px;
-    width: 92vw;
   }
 
   .vow-line {
@@ -1145,6 +1314,7 @@ html, body {
     font-size: 1.85rem;
   }
 
+  /* Ending Screen */
   .end-content {
     padding: 24px 18px;
   }
@@ -1156,22 +1326,56 @@ html, body {
   .end-subtitle {
     font-size: 0.98rem;
   }
+}
 
-  .audio-controls {
-    top: calc(var(--letterbox-height) + 10px);
-    right: 12px;
-    padding: 5px 10px;
-    gap: 6px;
+/* Landscape Mode on Mobile */
+@media (max-height: 520px) and (orientation: landscape) {
+  :root {
+    --letterbox-height: 10px;
   }
 
-  .btn-icon {
-    width: 30px;
-    height: 30px;
-    font-size: 0.85rem;
+  .letterbox {
+    display: block;
   }
 
-  .audio-controls .music-info {
-    display: none; /* Icon and waves on mobile for compact pill */
+  .scene-bg {
+    height: 100% !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    margin-top: 0 !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+    object-fit: cover !important;
+  }
+
+  .dialogue-container {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
+    width: 80vw;
+    max-width: 580px;
+  }
+
+  .dialogue-bubble {
+    padding: 10px 18px;
+  }
+
+  .dialogue-text {
+    font-size: 1.05rem;
+    min-height: 36px;
+  }
+
+  .title-card {
+    padding: 18px 24px;
+    width: 75vw;
+    max-width: 480px;
+  }
+
+  .title-text {
+    font-size: 1.45rem;
+    margin-bottom: 6px;
+  }
+
+  .title-subtitle {
+    margin-bottom: 14px;
   }
 }
 

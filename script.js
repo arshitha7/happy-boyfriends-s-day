@@ -256,13 +256,17 @@
     // 1. Try local audio file first (assets/song.mp3, assets/music.mp3, etc.)
     if (localAudio) {
       localAudio.volume = 0.85;
+      if (!localAudio.src || localAudio.src === '' || !localAudio.src.includes('v=')) {
+        localAudio.src = 'assets/song.mp3?v=20261003_bf';
+        localAudio.load();
+      }
       const playPromise = localAudio.play();
       if (playPromise !== undefined) {
         playPromise.then(() => {
           updateMusicUI(true);
           return;
-        }).catch(() => {
-          // If local audio file is not found, fallback to YouTube or procedural
+        }).catch((err) => {
+          console.warn("Local audio playback fallback:", err);
           tryYouTubeOrFallback();
         });
         return;
@@ -524,12 +528,12 @@
    */
   function walkToBench() {
     showScene(2); // scene_3_walking.jpg
-    showNotificationPill("Secretly holding a surprise behind her back... ♡", 4200);
+    showNotificationPill("Secretly holding a surprise behind her back... ♡", 8000);
 
     // Walk toward him, camera dollies closer
     storyTimeout = setTimeout(() => {
       sitBesideHim();
-    }, 6200);
+    }, 8000);
   }
 
   /**
