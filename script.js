@@ -243,8 +243,35 @@
     }
   };
 
+  const localAudio = document.getElementById('local-audio');
+  if (localAudio) {
+    localAudio.addEventListener('play', () => updateMusicUI(true));
+    localAudio.addEventListener('pause', () => updateMusicUI(false));
+    localAudio.addEventListener('ended', () => updateMusicUI(false));
+  }
+
   function playRomanticSong() {
     isSongActive = true;
+
+    // 1. Try local audio file first (assets/song.mp3, assets/music.mp3, etc.)
+    if (localAudio) {
+      localAudio.volume = 0.85;
+      const playPromise = localAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          updateMusicUI(true);
+          return;
+        }).catch(() => {
+          // If local audio file is not found, fallback to YouTube or procedural
+          tryYouTubeOrFallback();
+        });
+        return;
+      }
+    }
+    tryYouTubeOrFallback();
+  }
+
+  function tryYouTubeOrFallback() {
     if (ytReady && ytPlayer && typeof ytPlayer.playVideo === 'function') {
       try {
         ytPlayer.playVideo();
@@ -261,6 +288,9 @@
 
   function pauseRomanticSong() {
     isSongActive = false;
+    if (localAudio && !localAudio.paused) {
+      try { localAudio.pause(); } catch (e) { }
+    }
     if (ytReady && ytPlayer && typeof ytPlayer.pauseVideo === 'function') {
       try {
         ytPlayer.pauseVideo();
